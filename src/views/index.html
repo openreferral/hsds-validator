@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" />
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"   integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous" ></script>
+    <link rel="stylesheet" href="styles.css" />
+	<script src="./vue-script.js"></script>
+	
+    <title>HSDS-Validator</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+          <!-- <div class="col-6 mt-5 container">
+          <h1>Validator Home Page</h1>
+          <div class="mt-3">
+            <ol>
+            <li v-for="(rule,index) in rules" :key="index" class="pl-4">
+              {{rule}}
+            </li>
+            <li class="pl-4">
+              Status:
+              <ol type="a">
+              <li v-for="(rule,index) in status" :key="index" class="pl-4">
+                {{rule}}
+              </li>
+              </ol>
+            </li>
+            <li class="pl-4">
+              Results:
+              <ol type="a">
+              <li v-for="(rule,index) in results" :key="index" class="pl-4">
+                {{rule}}
+              </li>
+              </ol>
+            </li>
+            </ol>
+          </div>
+          </div> -->
+        <div class="col-12 mt-3">
+          <div class="card">
+            <h5 class="card-header">HSDS Validator</h5>
+            <div class="card-body">
+              <!-- <h5 class="card-title">Human Services Data Specification (HSDS)</h5> -->
+              <p class="card-text">
+                You can use this website to check if your data conforms to the <a href="http://docs.openreferral.org/en/latest/hsds/" target="_blank">Human Services Data Specification</a> (HSDS), a data standard established and maintained by the <a href="https://openreferral.org/" target="_blank">Open Referral</a> project.
+              </p>
+              <p class="card-text">
+                Upload an HSDS zip file to validate multiple files or validate single files using the table below.
+              </p>
+              <p class="card-text">
+                Make sure your files are using the proper table names, which are documented in the “path” sections of the HSDS specification.
+              </p>
+              <br/>
+              <div class="file-upload mb-4" id="chooseFileall">
+                <div class="file-select">
+                  <div class="file-select-button" id="fileName1">Choose File</div>
+                  <div class="file-select-name" id="emptyfile">No file chosen...</div> 
+                  <input @change="handleZipUpload($event)" type="file" class="mb-1" name="zip_file" placeholder="Upload Zip" />
+                </div>
+              </div>
+              <!-- <input type="file" class="mb-1" name="zip_file" placeholder="Upload Zip" id="" @change="handleZipUpload($event)" /><br/> -->
+              <span class="text-muted d-none">* {{condition}}</span>
+              <button class="btn btn-success" @click="validateZip()">Run Validation Process</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class=" example table-responsive col-md-12 mt-4">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">CSV Name</th>
+                <th scope="col" class="text-center">Upload</th>
+                <th scope="col" class="text-center">Status</th>
+                <th scope="col" class="text-center">Result</th>
+              </tr>
+            </thead>
+            <tbody id="fileUpload">
+              <tr v-bind:class="[file.class]" v-for="(file,index) in files" :key="index" >
+                <td>{{file.filename+".csv"}}</td>
+                <td class="text-center">
+                  <div class="file-upload">
+                    <div class="file-select">
+                      <div class="file-select-button" id="fileName">Choose File</div>
+                      <div class="file-select-name" id="noFile">No file chosen...</div> 
+                      <input @change="handleImageUpload($event, index)" title="Choose CSV" class="inputFile form-control-file" ref="fileInput" type="file" name="chooseFile" />
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">{{file.status}}</td>
+                <td class="text-center">{{file.result}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <br/>
+        <hr/>
+        <div class="footer_text text-center">
+            <p>This website was created and is maintain by <a href="http://sarapis.org/" target="_blank">Sarapis</a>.</p>
+            <br/>
+        </div>
+
+	    </div>
+    </div>
+  </body>
+  <script>
+    const vueApp = new Vue({
+      el: "#app",
+      data() {
+        return {
+          rules: [
+            "Data Table: If Uploading a zip, data table names must match HSDS table names",
+            "Action: If user is uploading on a table by table basis, this filename doesn't have to match HSDS.The user's filename will appear in the Action Column after upload.",
+          ],
+          status: [
+            "Ready - data is uploaded",
+            "No Data - if no data has been uploaded",
+            "Processing -if the validator is currently processing the table",
+            "Processed - if the validator processed the table",
+          ],
+          results: [
+            "Valid - matches HSDS spec",
+            "InValid - doesn't match HSDS spec",
+            "Valid with address - all HSDS fields match but additional fields are also present",
+          ],
+          about:
+            "Upload individual data tables or a zip file to see if your data is formatted consistently with the Human Services Data Standard Specification",
+          condition:
+            "If uploading zip, data table names must match with HSDS table names",
+          files: [
+            // { name: "datapackage", status: "No Data", result: "-", filename: 'datapackage.json' },
+            { name: "accessibility_for_disabilities", status: "No Data", result: "-", filename: 'accessibility_for_disabilities', class: ''},
+            { name: "contact", status: "No Data", result: "-" , filename: 'contacts', class: ''},
+            { name: "eligibilty", status: "No Data", result: "-" , filename: 'eligibilty', class: ''},
+            { name: "funding", status: "No Data", result: "-" , filename: 'funding', class: ''},
+            { name: "holiday_schedule", status: "No Data", result: "-" , filename: 'holiday_schedules', class: ''},
+            { name: "language", status: "No Data", result: "-" , filename: 'languages', class: ''},
+            { name: "location", status: "No Data", result: "-" , filename: 'locations', class: ''},
+            { name: "meta_table_description", status: "No Data", result: "-" , filename: 'meta_table_descriptions', class: ''},
+            { name: "metadata", status: "No Data", result: "-" , filename: 'metadata', class: ''},
+            { name: "organization", status: "No Data", result: "-" , filename: 'organizations', class: ''},
+            { name: "payment_accepted", status: "No Data", result: "-" , filename: 'payments_accepted', class: ''},
+            { name: "phone", status: "No Data", result: "-" , filename: 'phones', class: ''},
+            { name: "physical_address", status: "No Data", result: "-" , filename: 'physical_addresses', class: ''},
+            { name: "postal_address", status: "No Data", result: "-" , filename: 'postal_addresses', class: ''},
+            { name: "program", status: "No Data", result: "-" , filename: 'programs', class: ''},
+            { name: "regular_schedule", status: "No Data", result: "-" , filename: 'regular_schedules', class: ''},
+            { name: "required_document", status: "No Data", result: "-" , filename: 'required_documents', class: ''},
+            { name: "service_area", status: "No Data", result: "-" , filename: 'service_areas', class: ''},
+            { name: "service", status: "No Data", result: "-" , filename: 'services', class: ''},
+            { name: "service_at_location", status: "No Data", result: "-" , filename: 'services_at_location', class: ''},
+            { name: "service_taxonomy", status: "No Data", result: "-" , filename: 'services_taxonomy', class: ''},
+            { name: "taxonomy", status: "No Data", result: "-" , filename: 'taxonomy', class: ''},
+          ],
+          selectedFile: null,
+          responseZip: ''
+        };
+      },
+      methods: {
+
+		
+        async handleImageUpload(event, index){
+          this.files[index].status = 'Ready';
+          const files = event.target.files
+          const formData = new FormData()
+          formData.append('file', files[0])
+          formData.append('type',  this.files[index].name)
+          this.files[index].status = 'Processing';
+          await fetch('/validate/csv', {
+            method: 'POST',
+            body: formData,
+          })
+          .then(response => response.json())
+          .then(data => {
+            this.files[index].status = 'Processed';
+            if(data.valid == true) {
+              this.files[index].result = 'Valid';
+              if(data.header > data.fields) {
+                this.files[index].result = 'Valid with additions';
+              }
+              this.files[index].class = "table-success";
+            }else {
+              this.files[index].result = 'InValid';
+              this.files[index].class = "table-danger";
+            }
+            console.log(data)
+          })
+          .catch(error => {
+            this.files[index].status = 'Processing';
+            this.files[index].result = 'Error';
+            console.error(error, 'sasas')
+          })
+        },
+        async handleZipUpload(event){
+          for(const f of this.files) {
+            f.status = "Processing";
+          }
+
+          const files = event.target.files
+          const formData = new FormData()
+          formData.append('file', files[0])
+          formData.append('type',  'zip')
+          await fetch('/validate/zip', {
+            method: 'POST',
+            body: formData,
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            this.responseZip = data;
+            if(data) {
+              for(const f of this.files) {
+                if(data[f.filename]) {
+                  f.result = data[f.filename].valid ? "Valid" : "Invalid";
+                  if(data[f.filename].valid && data[f.filename].header > data[f.filename].fields) {
+                    f.result = 'Valid with additions';
+                  }
+                  console.log(f.result);
+                  f.class = data[f.filename].valid ? "table-success" : "table-danger";
+                } else {
+                  f.result = "Null";
+                  f.class = "table-warning";
+                }
+                f.status = "Processed";
+              }
+            }
+
+          })
+          .catch(error => {
+            console.error(error, 'sasas')
+          })
+        },
+        validateZip(){
+          // console.log(this.responseZip.accessibility_for_disabilities)
+          // return false
+          this.files.map((data, index) => {
+            var name = data.filename
+            // console.log(this.responseZip[name], name)
+            data.status = 'Processing'
+            data.result = this.responseZip[name].valid
+            data.status = 'Processed'
+          })
+        }
+      },
+    });
+  </script>
+  <script>
+	$('#fileUpload input').bind('change', function (event) {
+		var filename = $(this).val();
+		if (/^\s*$/.test(filename)) {
+			$(this).prev().text("No file chosen..."); 
+		}
+		else {
+			$(this).prev().text(filename.replace("C:\\fakepath\\", "")); 
+		}
+	});
+</script>
+
+<script>
+
+	$('#chooseFileall input').bind('change', function () {
+		var filename = $(this).val();
+		if (/^\s*$/.test(filename)) {
+			$(this).prev().text("No file chosen..."); 
+		}
+		else {
+			$(this).prev().text(filename.replace("C:\\fakepath\\", "")); 
+		}
+	});
+
+</script>
+</html>
