@@ -1,8 +1,4 @@
-# Open Referral - Validator microservice
-
-Visit [Project Github page](https://openreferral.github.io/hsds-validator/).
-
-A micro-service with a **RESTful API** for validating data packages and resources using the official [Human Services Data Specification](https://openreferral.readthedocs.io/en/latest/hsds/) from [Open Referral](https://openreferral.org/). Thanks to [@spilio](https://github.com/spilio/) for development of this tool.  
+# Application enabling people to validate Open Referral's Human Service Data Specification data.
 
 # Running the service
 
@@ -64,9 +60,7 @@ $ npm start
 
 Once the service has been launched you can verify that the API is up by hitting http://localhost:1400/health.  If everything is ok you should get a blank page (or a 200 response).
 
-## OpenAPI definition
 
-The micro-service has an OpenAPI 2.x compliant definition that is automatically generated on startup.  You can find the OpenAPI (Swagger) definition here http://localhost:1400/swagger.  You can parse the OpenAPI definition with any popular API tool like [Swagger](https://swagger.io/tools/swagger-ui/), [Postman](https://www.getpostman.com/), etc and start interacting with the service.
 
 
 ## API operations
@@ -162,7 +156,3 @@ A successful validation would return something like:
     "errors": []
 }
 ```
-
-# Sample data sets
-
-You can test drive the validator using the *HSDS sample data sets* found in the dedicated [Github repository](https://github.com/openreferral/sample-data).  Clone the repository or [download as a ZIP archive](https://github.com/openreferral/sample-data/archive/master.zip) and extract them locally.
