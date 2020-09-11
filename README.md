@@ -1,4 +1,4 @@
-### `Application enabling people to validate Open Referral's Human Service Data Specification data.`
+`Application enabling people to validate Open Referral's Human Service Data Specification data.`
 
 # Running the service
 
