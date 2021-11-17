@@ -117,3 +117,28 @@ A successful validation would return something like:
     "errors": []
 }
 ```
+
+## Deploying to AWS
+
+The following commands will allow you to deploy the container to Amazon's Elastic Container Repository (ECR):
+
+#### Authenticate with AWS (must have the AWS CLI for ECR installed and have valid API credentials)
+```bash 
+aws ecr get-login-password --region [region] | docker login --username AWS --password-stdin [AWS Account# ].dkr.ecr.[region].amazonaws.com
+```
+#### Build Docker image
+ ```bash
+ docker build -t [Image Name] .
+ ```
+
+#### Tag Docker Image
+```bash
+docker tag [Repo Name]:[latest|version] [AWS Account# ].dkr.ecr.[region].amazonaws.com/[Image Name]:[latest|version]
+```
+
+#### Push Image
+```bash
+docker push [AWS Account# ].dkr.ecr.[region].amazonaws.com/[Image Name]:[latest|version]
+```
+
+The image will now be available for deployment to any service appropriate for container deployment, such as ECS, EKS, or Lambda functions.

@@ -61,6 +61,9 @@ module.exports = function(server, datapackage) {
           file: stream
         } = payload;
 
+        console.log("The request is: ", request);
+        console.log("The payload is: ", payload);
+
         try {
 
           if (typeof type === 'undefined') {

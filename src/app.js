@@ -31,7 +31,7 @@ router.get("/", function (req, res) {
 app.use("/abc", router);
 // set defaults
 nconf.overrides({
-  HOST: "localhost",
+  HOST: '0.0.0.0',
   PORT: 3000,
 });
 
@@ -73,11 +73,11 @@ const Application = (function Bootstrap() {
      */
 
     if (_.isUndefined(nconf.get("HOST"))) {
-      nconf.set("HOST", "localhost");
+      nconf.set("HOST", "0.0.0.0");
     }
 
     if (_.isUndefined(nconf.get("PORT"))) {
-      nconf.set("PORT", 1330);
+      nconf.set("PORT", 3000);
     }
 
     _server = new Hapi.Server({
