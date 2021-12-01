@@ -106,7 +106,7 @@ Validate an HSDS data resource file.  The operation validates an uploaded CSV da
 #### Example call
 
 ```bash
-$ curl -F 'type=contact' -F 'file=@/home/chris/contacts.csv' 'http://localhost:1400/validate/csv'
+$ curl -X POST -F 'type=contact' -F 'file=@/home/chris/contacts.csv' 'http://localhost:1400/validate/csv'
 ```
 
 A successful validation would return something like:
