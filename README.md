@@ -4,13 +4,19 @@
 
 ### Running locally with NodeJS
 
-In order to run the project locally you need to have the latest [NodeJS](https://nodejs.org/en/download/) and [npm](https://www.npmjs.com/) installed.
+In order to run the project locally you need to have the latest (NOT > Node v14.x, NPM v6.x) [NodeJS](https://nodejs.org/en/download/) and [npm](https://www.npmjs.com/) installed.
 
 Once your environment is all set up, clone the repository, go into the root directory and install all dependencies by running
 
 ```bash
 $ npm install
 ```
+You _may_ need to install nodemon first using the following command:
+
+``` bash
+$ npm install -g nodemon
+```
+
 Once all the dependencies have been downloaded, run the application with
 
 ```bash
@@ -19,10 +25,7 @@ $ npm start
 
 # Using the validator service
 
-Once the service has been launched you can verify that the API is up by hitting http://localhost:1400/health.  If everything is ok you should get a blank page (or a 200 response).
-
-
-
+Once the service has been launched you can verify that the API is up by hitting http://localhost:3000/health.  If everything is ok you should get a blank page (or a 200 response).
 
 ## API operations
 
