@@ -172,9 +172,10 @@
         async handleImageUpload(event, index){
           this.files[index].status = 'Ready';
           const files = event.target.files
-          const formData = new FormData()
-          formData.append('file', files[0])
-          formData.append('type',  this.files[index].name)
+          const formData = new FormData();
+          formData.append('file', files[0]);
+          formData.append('type',  this.files[index].name);
+          console.info("The formData is: ", formData);
           this.files[index].status = 'Processing';
           await fetch('/validate/csv', {
             method: 'POST',

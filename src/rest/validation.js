@@ -33,7 +33,7 @@ module.exports = function(server, datapackage) {
       notes: [
         'The operation validates an uploaded CSV data stream using the ',
         'definition of a specified resource as found in the standard Open Referral data package',
-        'specification.  Clients should send a form payload containg a "type" field with the name ',
+        'specification.  Clients should send a form payload containing a "type" field with the name ',
         'of the Open Referral logical resource and a "file" that contains the CSV data stream.'
       ].join(''),
       plugins: {
@@ -51,6 +51,8 @@ module.exports = function(server, datapackage) {
       },
       async handler(request, h) {
 
+        console.log("The request is: ", request);
+
         // get the uploaded resource type
         const {
           payload
@@ -62,7 +64,6 @@ module.exports = function(server, datapackage) {
         } = payload;
 
         try {
-
           if (typeof type === 'undefined') {
             throw new Error('Form should contain the field "type" with a valid resource name');
           }
@@ -72,6 +73,7 @@ module.exports = function(server, datapackage) {
           }
 
           const result = await datapackage.validateResource(stream, type);
+          console.log("The result is: ", result);
           let csvPath = path.join(process.cwd(), "public/"+( (new Date()).getTime())+".csv" );
 
           await fs.writeFileSync(csvPath, stream._data);
@@ -100,16 +102,16 @@ module.exports = function(server, datapackage) {
     method: 'POST',
     config: {
       tags: ['api'],
-      description: 'Validate a CSV data file using a specific Open Referral resource schema',
+      description: 'Validate a Zip data file using a specific Open Referral resource schema',
       notes: [
-        'The operation validates an uploaded CSV data stream using the ',
+        'The operation validates an uploaded Zip data stream (containing .csv files) using the ',
         'definition of a specified resource as found in the standard Open Referral data package',
         'specification.  Clients should send a form payload containg a "type" field with the name ',
         'of the Open Referral logical resource and a "file" that contains the CSV data stream.'
       ].join(''),
       plugins: {
         'hapi-swaggered': {
-          operationId: 'validateCsvResource'
+          operationId: 'validateZipResource'
         }
       },
       payload: {
@@ -117,9 +119,9 @@ module.exports = function(server, datapackage) {
         parse: true,
         allow: 'multipart/form-data'
       },
-      // response: {
-      //   schema: ValidationResult
-      // },
+      response: {
+        schema: ValidationResult
+      },
       async handler(request, h) {
 
         // get the uploaded resource type

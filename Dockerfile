@@ -1,5 +1,5 @@
 # Base image
-FROM node:8-slim
+FROM node:16
 
 ADD package.json /tmp/package.json
 
