@@ -35,6 +35,116 @@ Once the service has been launched you can verify that the API is up by hitting 
 
 Returns a 200 OK response
 
+### `GET /resources`
+
+#### Description
+
+Returns a list of all HSDS resource definitions
+
+### `GET /resources/{name}`
+
+#### Description
+
+Obtains a resource definition by name
+
+#### Query parameters
+
+- `name`: The name of the resource (HSDS entity) (e.g. location, organization, etc.)
+
+#### Response
+
+The operation returns the resource as defined within the default DataPackage
+
+#### Example call
+
+```bash
+$ curl 'http://localhost:3000/resources/location
+```
+
+This will return a response similar to:
+
+```json
+[{
+  "name": "location",
+  "local": true,
+  "remote": false,
+  "multipart": false,
+  "tabular": true,
+  "source": "/Users/ajlevinson/Development/unity-foundation/hsds-validator/src/locations.csv",
+  "schema": {
+    "fields": [
+      {
+        "name": "id",
+        "description": "Each location must have a unique identifier",
+        "type": "string",
+        "constraints": {
+          "required": true
+        },
+        "format": "default"
+      },
+      {
+        "name": "organization_id",
+        "description": "Each location entry should be linked to a single organization. This is the organization that is responsible for maintaining information about this location. The identifier of the organization should be given here. Details of the services the organisation delivers at this location should be provided in the services_at_location table.",
+        "type": "string",
+        "format": "default"
+      },
+      {
+        "name": "name",
+        "description": "The name of the location",
+        "type": "string",
+        "format": "default"
+      },
+      {
+        "name": "alternate_name",
+        "description": "An alternative name for the location",
+        "type": "string",
+        "format": "default"
+      },
+      {
+        "name": "description",
+        "description": "A description of this location.",
+        "type": "string",
+        "constraints": {
+          "required": false
+        },
+        "format": "default"
+      },
+      {
+        "name": "transportation",
+        "description": "A description of the access to public or private transportation to and from the location.",
+        "type": "string",
+        "format": "default"
+      },
+      {
+        "name": "latitude",
+        "description": "Y coordinate of location expressed in decimal degrees in WGS84 datum.",
+        "type": "number",
+        "format": "default"
+      },
+      {
+        "name": "longitude",
+        "description": "X coordinate of location expressed in decimal degrees in WGS84 datum.",
+        "type": "number",
+        "format": "default"
+      }
+    ],
+    "primaryKey": "id",
+    "foreignKeys": [
+      {
+        "fields": "organization_id",
+        "reference": {
+          "resource": "organization",
+          "fields": "id"
+        }
+      }
+    ],
+    "missingValues": [
+      ""
+    ]
+  }
+}]
+```
+
 ### `GET /validate/datapackage`
 
 #### Description
@@ -55,7 +165,7 @@ The operation returns a collection of validation results, one per resource as de
 Given we have a sample datapackage.json file at http://example.com/openreferral/datapackage.json that contains a small subset of resources, we can run the following command to validate the contained resources:
 
 ```bash
-$ curl 'http://localhost:1400/validate/datapackage?uri=http://example.com/openreferral/datapackage.json'
+$ curl 'http://localhost:3000/validate/datapackage?uri=http://example.com/openreferral/datapackage.json'
 ```
 
 If all data resources are valid, the service will return a response like:
@@ -106,7 +216,7 @@ Validate an HSDS data resource file.  The operation validates an uploaded CSV da
 - `type`: A valid HSDS resource name, e.g. **contact**
 - `file`: The CSV file to be validated
 
-#### Example call
+#### Example validation call
 
 ```bash
 $ curl -X POST -F 'type=contact' -F 'file=@/home/chris/contacts.csv' 'http://localhost:1400/validate/csv'

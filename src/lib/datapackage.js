@@ -81,7 +81,6 @@ class DataPackage {
 
     // get the resource definition by name
     const resource = this.package.getResource(name);
-    console.log("The resource is: ", resource);
 
     if (!resource) {
       throw new Error('Resource not found');
@@ -100,7 +99,6 @@ class DataPackage {
       res.schema = resource.schema.descriptor;
     }
 
-    console.log("Res is: ", res);
     return res;
   }
 
@@ -134,8 +132,6 @@ class DataPackage {
 
       // set the resource name on the result set
       result.resource = resource.name;
-
-      console.log("The result is: ", result.resource);
 
       // add it to the results collection
       results.push(result);
@@ -253,9 +249,6 @@ class DataPackage {
     headersRow
   } = {}) {
 
-    console.log("The source is: ", source);
-    console.log("The resourceName is: ", resourceName);
-
     if (typeof source === 'undefined') {
       throw new DataValidationError('A valid data source is required');
     }
@@ -270,7 +263,6 @@ class DataPackage {
     // create a new table instance
     // using the selected resource
     // schema and data source
-    console.log("The resource to validate is: ", resource);
     const table = await Table.load(source, {
       schema: resource.schema,
       headers: headersRow
@@ -298,7 +290,6 @@ class DataPackage {
 
         // get the next line
         const res = await iterator.next();
-        console.log("The next line is: ", res);
         ({
           done,
           value
@@ -317,7 +308,7 @@ class DataPackage {
           result.errors = result.errors.concat(errors);
         }
       } catch (e) {
-        console.log("Error encountered during processing: ", e);
+
         // resolve the errors
         const errors = _resolveErrors(resource, e);
         result.errors = result.errors.concat(errors);

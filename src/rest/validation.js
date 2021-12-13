@@ -51,8 +51,6 @@ module.exports = function(server, datapackage) {
       },
       async handler(request, h) {
 
-        console.log("The request is: ", request);
-
         // get the uploaded resource type
         const {
           payload
@@ -64,7 +62,6 @@ module.exports = function(server, datapackage) {
         } = payload;
 
         try {
-          console.log("THe type is: ", type);
           if (typeof type === 'undefined') {
             throw new Error('Form should contain the field "type" with a valid resource name');
           }
@@ -74,9 +71,6 @@ module.exports = function(server, datapackage) {
           }
 
           const result = await datapackage.validateResource(stream, type);
-          console.info("The result is: ", result);
-          console.info("The type is: ", type);
-          console.info("The stream is: ", stream);
           let csvPath = path.join(process.cwd(), "public/"+( (new Date()).getTime())+".csv" );
 
           await fs.writeFileSync(csvPath, stream._data);
