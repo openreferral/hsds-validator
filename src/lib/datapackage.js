@@ -42,6 +42,8 @@ class DataPackage {
     // try to load the data package
     const datapackage = await Package.load(url);
 
+    console.log("The datapackage is: ", datapackage);
+
     // return a wrapped data package instance
     return new DataPackage(datapackage);
   }
@@ -270,7 +272,7 @@ class DataPackage {
      * iterate the data set
      */
     const iterator = await table.iter({
-      forceCast: true
+      forceCast: false
     });
 
     let done, value;
