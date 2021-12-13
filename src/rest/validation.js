@@ -51,6 +51,8 @@ module.exports = function(server, datapackage) {
       },
       async handler(request, h) {
 
+        console.log("The request is: ", request);
+
         // get the uploaded resource type
         const {
           payload
@@ -71,6 +73,7 @@ module.exports = function(server, datapackage) {
           }
 
           const result = await datapackage.validateResource(stream, type);
+          console.log("The result is: ", result);
           let csvPath = path.join(process.cwd(), "public/"+( (new Date()).getTime())+".csv" );
 
           await fs.writeFileSync(csvPath, stream._data);
